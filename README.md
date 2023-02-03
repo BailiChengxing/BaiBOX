@@ -4,8 +4,11 @@ Baibox工具箱是由百里程星开发的一款多功能的CMD工具箱，通�
 能精确检测到设备并读取基本信息<br>
 ![NC1Ey.png](https://i.328888.xyz/2023/02/03/NC1Ey.png)
 
-## System模块
+## System模式
+![NloOC.png](https://i.328888.xyz/2023/02/03/NloOC.png)
 
-## Fastboot模块
+## Fastboot模式
+![NlJ0t.png](https://i.328888.xyz/2023/02/03/NlJ0t.png)
 
-## Recvoery模块
+## Recvoery模式
+![NlLJc.png](https://i.328888.xyz/2023/02/03/NlLJc.png)
