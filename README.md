@@ -14,4 +14,4 @@ Baibox工具箱是由百里程星开发的一款多功能的CMD工具箱，通�
 ![NlLJc.png](https://i.328888.xyz/2023/02/03/NlLJc.png)
 
 ## 下载
-你可以[点我](https://github.com/BailiChengxing/BaiBOX/releases/tag/1.1.0)快速前往Releases下载，也可以[点我](https://github.com/BailiChengxing/BaiBOX/releases/download/1.1.0/release.zip)立刻开始下载
+你可以[快速前往Releases下载](https://github.com/BailiChengxing/BaiBOX/releases/tag/1.1.0)，也可以[立刻开始下载](https://github.com/BailiChengxing/BaiBOX/releases/download/1.1.0/release.zip)
