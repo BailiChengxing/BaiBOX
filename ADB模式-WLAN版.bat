@@ -5,18 +5,19 @@ set ip_adress=192.168.3.57:5555
 title BaiBOX-ADB模式-WLAN版
 mode con: cols=50 lines=25
 color 3f
-.\adb_mode\adb disconnect >nul
-.\adb_mode\adb connect %ip_adress%>nul
-.\adb_mode\adb devices -l | findstr model>info.txt
-for /f "usebackq tokens=3,4,5 delims=-, " %%i in (info.txt) do (set x=%%i && set y=%%j && set z=%%k)
-del info.txt
-for /f "delims=" %%i in ('.\adb_mode\adb shell getprop ro.product.model') do set name=%%i
-for /f "delims=" %%i in ('.\adb_mode\adb shell getprop ro.build.version.release') do set version=%%i
-for /f "delims=" %%i in ('.\adb_mode\adb shell settings get secure android_id') do set device_id=%%i
-for /f "delims=" %%i in ('.\adb_mode\adb shell cat /sys/class/net/wlan0/address') do set mac_id=%%i
-for /f "delims=" %%i in ('.\adb_mode\adb shell wm size') do set screen=%%i
-for /f "delims=" %%i in ('.\adb_mode\adb shell "ip addr | grep inet | grep "/24" | awk '{print $2}' | cut -d "/" -f1"') do set ip=%%i
-.\adb_mode\adb devices -l | find "device product:" >nul
+if exist Data (echo Data>nul) else (md Data)
+.\bin\adb disconnect >nul
+.\bin\adb connect %ip_adress%>nul
+.\bin\adb devices -l | findstr model>Data\info.txt
+for /f "usebackq tokens=3,4,5 delims=-, " %%i in (Data\info.txt) do (set x=%%i && set y=%%j && set z=%%k)
+del Data\info.txt
+for /f "delims=" %%i in ('.\bin\adb shell getprop ro.product.model') do set name=%%i
+for /f "delims=" %%i in ('.\bin\adb shell getprop ro.build.version.release') do set version=%%i
+for /f "delims=" %%i in ('.\bin\adb shell settings get secure android_id') do set device_id=%%i
+for /f "delims=" %%i in ('.\bin\adb shell cat /sys/class/net/wlan0/address') do set mac_id=%%i
+for /f "delims=" %%i in ('.\bin\adb shell wm size') do set screen=%%i
+for /f "delims=" %%i in ('.\bin\adb shell "ip addr | grep inet | grep "/24" | awk '{print $2}' | cut -d "/" -f1"') do set ip=%%i
+.\bin\adb devices -l | find "device product:" >nul
 if errorlevel 1 (
     echo 连接失败
 	pause
@@ -53,12 +54,12 @@ if errorlevel 1 (
     echo ——————————————————————————————————————————————————
     set /p num=请输入数字:
 	if %num%==0 (goto cmd_mode)
-    if %num%==1 (.\adb_mode\adb shell input keyevent 26)
+    if %num%==1 (.\bin\adb shell input keyevent 26)
     if %num%==2 (goto reboot)
     if %num%==3 (goto install)
     if %num%==4 (goto uninstall)
     if %num%==5 (goto super_uninstall)
-    if %num%==6 (.\adb_mode\adb disconnect)
+    if %num%==6 (.\bin\adb disconnect)
     if %num%==7 (goto link)
     if %num%==8 (goto send)
     if %num%==9 (goto recive)
@@ -68,7 +69,7 @@ if errorlevel 1 (
 
 :pack
 set /p ages=请输入关键词：
-.\adb_mode\adb shell cmd package list packages|findstr %ages%
+.\bin\adb shell cmd package list packages|findstr %ages%
 pause
 goto check
 
@@ -85,18 +86,18 @@ echo 5.重启到edl
 echo ——————————————————————————————————————————————————
 set /p nu=输入以下数字执行操作：
 if %nu%==0 (echo 已经取消执行电源选项)
-if %nu%==1 (.\adb_mode\adb shell reboot -p>nul)
-if %nu%==2 (.\adb_mode\adb shell reboot>nul)
-if %nu%==3 (.\adb_mode\adb reboot bootloader>nul)
-if %nu%==4 (.\adb_mode\adb reboot recovery>nul)
-if %nu%==5 (.\adb_mode\adb reboot edl>nul)
+if %nu%==1 (.\bin\adb shell reboot -p>nul)
+if %nu%==2 (.\bin\adb shell reboot>nul)
+if %nu%==3 (.\bin\adb reboot bootloader>nul)
+if %nu%==4 (.\bin\adb reboot recovery>nul)
+if %nu%==5 (.\bin\adb reboot edl>nul)
 goto check
 
 
 :send
 echo 请将文件拖到这里并按下回车:
 set /p filename=
-.\adb_mode\adb push %filename% /sdcard
+.\bin\adb push %filename% /sdcard
 echo 传输结束！
 pause
 goto check
@@ -106,7 +107,7 @@ set desk=%userprofile%\desktop
 echo 手机主目录为/sdcard/，文件会传输到桌面
 echo 请将输入目录及文件名并按下回车:
 set /p fname=
-.\adb_mode\adb pull %fname% %desk%
+.\bin\adb pull %fname% %desk%
 echo 传输结束！
 pause
 goto check
@@ -114,7 +115,7 @@ goto check
 :install
 set /p app=请将文件拖到这里并按下回车：
 echo 安装中
-.\adb_mode\adb install %app%>nul
+.\bin\adb install %app%>nul
 echo 安装结束
 pause
 goto check
@@ -122,7 +123,7 @@ goto check
 :uninstall
 set /p uapp=请输入要卸载软件的包名：
 echo 卸载中
-.\adb_mode\adb uninstall %uapp%>nul
+.\bin\adb uninstall %uapp%>nul
 echo 卸载结束
 pause
 goto check
@@ -130,7 +131,7 @@ goto check
 :super_uninstall
 set /p uapp=请输入要卸载软件的包名：
 echo 卸载中
-.\adb_mode\adb shell pm uninstall -k --user 0 %uapp%>nul
+.\bin\adb shell pm uninstall -k --user 0 %uapp%>nul
 echo 卸载结束
 pause
 goto check
@@ -138,29 +139,29 @@ goto check
 :cmd_mode
 echo 你已经进入输入模式:
 echo 输入exit退出
-cd adb_mode
+cd bin
 cmd
 cd ..
 cls
 goto check
 
 :link
-set luanch_name=luanch" ""%name%".bat
+set luanch_name=Data\luanch" ""%name%".bat
 if exist %luanch_name% (start /min %luanch_name%) else (goto write)
 echo 请等待应用程序启动
 goto check
 
 :write
-echo .\adb_mode\adb connect %ip_adress%>%luanch_name%
-echo .\adb_mode\scrcpy>>%luanch_name%
-echo .\adb_mode\adb disconnect>>%luanch_name%
+echo .\bin\adb connect %ip_adress%>%luanch_name%
+echo .\bin\scrcpy>>%luanch_name%
+echo .\bin\adb disconnect>>%luanch_name%
 start /min %luanch_name%
 echo 请等待应用程序启动
 goto check
 
 :check
 echo 执行完毕
-.\adb_mode\adb devices -l | find "device product:" >nul
+.\bin\adb devices -l | find "device product:" >nul
 if errorlevel 1 (
     echo 设备已经断开
 	pause

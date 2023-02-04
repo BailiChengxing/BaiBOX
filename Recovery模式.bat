@@ -3,9 +3,10 @@ rem made by Bailey Chase
 title BaiBOX-Recovery模式
 mode con: cols=50 lines=25
 color 3f
+if exist Data (echo Data>nul) else (md Data)
 set device=0
-.\adb_mode\adb devices -l | find "recovery" >nul
-for /f "delims=" %%i in ('.\adb_mode\adb -d shell getprop ro.product.model') do set name=%%i
+.\bin\adb devices -l | find "recovery" >nul
+for /f "delims=" %%i in ('.\bin\adb -d shell getprop ro.product.model') do set name=%%i
 if errorlevel 1 (
     echo 未检测到设备，连接失败
 	pause
@@ -46,20 +47,20 @@ echo 5.重启到download
 echo ——————————————————————————————————————————————————
 set /p nu=输入以下数字执行操作：
 if %nu%==0 (echo 已经取消执行电源选项)
-if %nu%==1 (.\adb_mode\adb shell twrp reboot poweroff>nul)
-if %nu%==2 (.\adb_mode\adb shell twrp reboot>nul)
-if %nu%==3 (.\adb_mode\adb shell twrp reboot bootloader>nul)
-if %nu%==4 (.\adb_mode\adb shell twrp reboot recovery>nul)
-if %nu%==5 (.\adb_mode\adb shell twrp reboot download>nul)
+if %nu%==1 (.\bin\adb shell twrp reboot poweroff>nul)
+if %nu%==2 (.\bin\adb shell twrp reboot>nul)
+if %nu%==3 (.\bin\adb shell twrp reboot bootloader>nul)
+if %nu%==4 (.\bin\adb shell twrp reboot recovery>nul)
+if %nu%==5 (.\bin\adb shell twrp reboot download>nul)
 goto check
 
 :device_info
-.\adb_mode\adb devices -l | findstr model>info.txt
-for /f "usebackq tokens=3,4,5 delims=-, " %%i in (info.txt) do (set x=%%i && set y=%%j && set z=%%k)
+.\bin\adb devices -l | findstr model>Data\info.txt
+for /f "usebackq tokens=3,4,5 delims=-, " %%i in (Data\info.txt) do (set x=%%i && set y=%%j && set z=%%k)
+del Data\info.txt
 echo %x:product=产品名称%
 echo %y:model=设备名称%
 echo %z:device=设备代号%
-del info.txt
 pause
 goto check
 
@@ -70,9 +71,9 @@ echo 你确定要把卡刷包%filename%刷入吗[yes/no]
 set ck=
 set /p ck=
 if %ck%==yes (
-    .\adb_mode\adb shell twrp sideload
+    .\bin\adb shell twrp sideload
 	ping 127.1 -n 5 > nul
-	.\adb_mode\adb sideload %filename%
+	.\bin\adb sideload %filename%
 ) else (
     echo 已经取消执行
 )
@@ -82,15 +83,16 @@ goto check
 :cmd_mode
 echo 你已经进入输入模式:
 echo 输入exit退出
-cd adb_mode
+cd bin
 cmd
 cd ..
 cls
 goto check
 
 :check
+ping 127.1 -n 2 > nul
 echo 执行完毕
-.\adb_mode\adb devices -l | find "recovery" >nul
+.\bin\adb devices -l | find "recovery" >nul
 if errorlevel 1 (
     echo 设备已经断开
 	pause

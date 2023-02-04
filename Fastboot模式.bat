@@ -3,8 +3,9 @@ rem made by Bailey Chase
 title BaiBOX-Fastboot模式
 mode con: cols=50 lines=25
 color 3f
+if exist Data (echo Data>nul) else (md Data)
 set device=0
-for /f "delims=" %%i in ('.\fastboot_mode\fastboot devices') do set device=1
+for /f "delims=" %%i in ('.\bin\fastboot devices') do set device=1
 if %device%==0 (
     echo 未检测到设备
 	echo 连接失败
@@ -35,23 +36,24 @@ if %device%==0 (
 	if %num%==2 (goto reboot)
 	if %num%==3 (goto install)
 	if %num%==4 (goto wipe)
-	if %num%==5 (.\fastboot_mode\fastboot -w reboot)
-	if %num%==6 (.\fastboot_mode\fastboot erase frp)
+	if %num%==5 (.\bin\fastboot -w reboot)
+	if %num%==6 (.\bin\fastboot erase frp)
 	if %num%==11 (exit)
     goto check
 
 :cmd_mode
 echo 你已经进入输入模式:
 echo 输入exit退出
-cd fastboot_mode
+cd bin
 cmd
 cd ..
 cls
 goto check
 
 :device_info
-.\fastboot_mode\fastboot getvar all
+.\bin\fastboot getvar all
 pause
+goto check
 
 :install
 cls
@@ -83,7 +85,7 @@ set /p filename=
 echo 你确定要把%filename%写入到%mo%分区吗？[yes/no]
 set ck=
 set /p ck=
-if %ck%==yes (.\fastboot_mode\fastboot flash %mo% %filename%) else (echo 已经取消执行)
+if %ck%==yes (.\bin\fastboot flash %mo% %filename%) else (echo 已经取消执行)
 pause
 goto check
 
@@ -125,7 +127,7 @@ goto check
 echo 你要清除%mo%分区吗？[yes/no]
 set ck=
 set /p ck=
-if %ck%==yes (.\fastboot_mode\fastboot erase %mo%) else (echo 已经取消执行)
+if %ck%==yes (.\bin\fastboot erase %mo%) else (echo 已经取消执行)
 pause
 goto check
 
@@ -141,16 +143,17 @@ echo 5.重启到edl模式
 echo ——————————————————————————————————————————————————
 set /p nu=输入以下数字执行操作：
 if %nu%==0 (echo 已经取消执行电源选项)
-if %nu%==1 (.\fastboot_mode\fastboot oem poweroff)
-if %nu%==2 (.\fastboot_mode\fastboot reboot)
-if %nu%==3 (.\fastboot_mode\fastboot reboot-bootloader)
-if %nu%==4 (.\fastboot_mode\fastboot oem reboot-recovery)
-if %nu%==5 (.\fastboot_mode\fastboot oem edl)
+if %nu%==1 (.\bin\fastboot oem poweroff)
+if %nu%==2 (.\bin\fastboot reboot)
+if %nu%==3 (.\bin\fastboot reboot-bootloader)
+if %nu%==4 (.\bin\fastboot oem reboot-recovery)
+if %nu%==5 (.\bin\fastboot oem edl)
 goto check
 
 :check
+ping 127.1 -n 2 > nul
 echo 执行完毕
-.\fastboot_mode\fastboot devices -l | find "fastboot" >nul
+.\bin\fastboot devices -l | find "fastboot" >nul
 if errorlevel 1 (
     echo 设备已经断开
 	pause
