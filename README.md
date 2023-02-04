@@ -5,7 +5,7 @@ Baibox工具箱是由百里程星开发的一款多功能的CMD工具箱，通�
 ![N8Ejx.png](https://i.328888.xyz/2023/02/04/N8Ejx.png)
 
 ## System模式
-![NloOC.png](https://i.328888.xyz/2023/02/03/NloOC.png)
+![N8JFF.png](https://i.328888.xyz/2023/02/04/N8JFF.png)
 
 ## Fastboot模式
 ![NlJ0t.png](https://i.328888.xyz/2023/02/03/NlJ0t.png)
