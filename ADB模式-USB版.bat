@@ -12,7 +12,7 @@ for /f "delims=" %%i in ('.\adb_mode\adb -d shell getprop ro.build.version.relea
 for /f "delims=" %%i in ('.\adb_mode\adb -d shell settings get secure android_id') do set device_id=%%i
 for /f "delims=" %%i in ('.\adb_mode\adb -d shell cat /sys/class/net/wlan0/address') do set mac_id=%%i
 for /f "delims=" %%i in ('.\adb_mode\adb -d shell wm size') do set screen=%%i
-for /f "delims=" %%i in ('.\adb_mode\adb shell "ip addr | grep inet | grep "/24" | awk '{print $2}' | cut -d "/" -f1"') do set ip_adress=%%i
+for /f "delims=" %%i in ('.\adb_mode\adb shell "ip addr | grep inet | grep "/24" | awk '{print $2}' | cut -d "/" -f1"') do set ip=%%i
 .\adb_mode\adb -d devices -l | find "device product:" >nul
 if errorlevel 1 (
     echo 连接失败
@@ -27,7 +27,7 @@ if errorlevel 1 (
 	echo 分辨率：%screen:~15%
 	echo 手机ID：%device_id%
 	echo MAC_ID：%mac_id%
-	echo IP地址:%ip_adress%
+	echo IP地址：%ip%
 	timeout /t 1
 	goto redo
 )
@@ -142,14 +142,15 @@ cls
 goto check
 
 :link
-if exist Chase_link.bat (start /min Chase_link.bat) else (goto write)
+set luanch_name=luanch" ""%name%".bat
+if exist %luanch_name% (start /min %luanch_name%) else (goto write)
 echo 请等待应用程序启动
 goto check
 
 :write
-echo .\adb_mode\scrcpy -d >> Chase_link.bat
-echo .\adb_mode\adb -d disconnect >> Chase_link.bat
-start /min Chase_link.bat
+echo .\adb_mode\scrcpy -d>>%luanch_name%
+echo .\adb_mode\adb -d disconnect>>%luanch_name%
+start /min %luanch_name%
 echo 请等待应用程序启动
 goto check
 

@@ -15,7 +15,7 @@ for /f "delims=" %%i in ('.\adb_mode\adb shell getprop ro.build.version.release'
 for /f "delims=" %%i in ('.\adb_mode\adb shell settings get secure android_id') do set device_id=%%i
 for /f "delims=" %%i in ('.\adb_mode\adb shell cat /sys/class/net/wlan0/address') do set mac_id=%%i
 for /f "delims=" %%i in ('.\adb_mode\adb shell wm size') do set screen=%%i
-for /f "delims=" %%i in ('.\adb_mode\adb shell "ip addr | grep inet | grep "/24" | awk '{print $2}' | cut -d "/" -f1"') do set ip_adress=%%i
+for /f "delims=" %%i in ('.\adb_mode\adb shell "ip addr | grep inet | grep "/24" | awk '{print $2}' | cut -d "/" -f1"') do set ip=%%i
 .\adb_mode\adb devices -l | find "device product:" >nul
 if errorlevel 1 (
     echo 连接失败
@@ -30,7 +30,7 @@ if errorlevel 1 (
 	echo 分辨率：%screen:~15%
 	echo 手机ID：%device_id%
 	echo MAC_ID：%mac_id%
-	echo IP地址:%ip_adress%
+	echo IP地址：%ip%
 	timeout /t 1
 	goto redo
 )
@@ -45,10 +45,10 @@ if errorlevel 1 (
     echo 3.安装应用
     echo 4.卸载应用
     echo 5.卸载系统应用
-    echo 6.adb断开连接
+    echo 6.断开ADB连接
     echo 7.远程控制手机
     echo 8.传输文件到sdcard
-    echo 9.输入命令
+    echo 9.传输文件到电脑desktop
 	echo 10.搜索应用包名
     echo ——————————————————————————————————————————————————
     set /p num=请输入数字:
@@ -145,15 +145,16 @@ cls
 goto check
 
 :link
-if exist Bailey_link.bat (start /min Bailey_link.bat) else (goto write)
+set luanch_name=luanch" ""%name%".bat
+if exist %luanch_name% (start /min %luanch_name%) else (goto write)
 echo 请等待应用程序启动
 goto check
 
 :write
-echo .\adb_mode\adb connect 192.168.3.57:5555 > Bailey_link.bat
-echo .\adb_mode\scrcpy >> Bailey_link.bat
-echo .\adb_mode\adb disconnect >> Bailey_link.bat
-start /min Bailey_link.bat
+echo .\adb_mode\adb connect %ip_adress%>%luanch_name%
+echo .\adb_mode\scrcpy>>%luanch_name%
+echo .\adb_mode\adb disconnect>>%luanch_name%
+start /min %luanch_name%
 echo 请等待应用程序启动
 goto check
 
